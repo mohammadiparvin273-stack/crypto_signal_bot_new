@@ -1,0 +1,25 @@
+name: crypto-signal-bot-reset-period
+
+on:
+  schedule:
+    - cron: "1 0 * * *"
+    - cron: "2 0 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: تشخیص نوع ریست بر اساس روز هفته
+        id: period
+        run: |
+          if [ "$(date -u +%u)" = "1" ] && [ "$(date -u +%H:%M)" \< "00:10" ]; then
+            echo "period=weekly" >> "$GITHUB_OUTPUT"
+          else
+            echo "period=daily" >> "$GITHUB_OUTPUT"
+          fi
+      - name: ریست کردن
+        run: |
+          curl -sS -X POST "${{ secrets.VERCEL_RESET_URL }}?period=${{ steps.period.outputs.period }}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 30 --fail
