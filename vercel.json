@@ -1,9 +1,9 @@
 {
   "functions": {
-    "api/scan.py": { "maxDuration": 60, "runtime": "vercel-python@3.12" },
-    "api/dashboard.py": { "maxDuration": 30, "runtime": "vercel-python@3.12" },
-    "api/report-trade.py": { "maxDuration": 15, "runtime": "vercel-python@3.12" },
-    "api/reset-period.py": { "maxDuration": 15, "runtime": "vercel-python@3.12" }
+    "api/scan.py": { "maxDuration": 60 },
+    "api/dashboard.py": { "maxDuration": 30 },
+    "api/report-trade.py": { "maxDuration": 15 },
+    "api/reset-period.py": { "maxDuration": 15 }
   },
   "crons": [
     { "path": "/api/scan", "schedule": "0 8 * * *" },
