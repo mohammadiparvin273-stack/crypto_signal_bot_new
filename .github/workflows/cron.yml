@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: run scan endpoint
         run: |
-          curl -sS -X GET "${{ secrets.VERCEL_SCAN_URL }}" -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 90 --fail
+          curl -sS -X GET "${{ secrets.VERCEL_SCAN_URL }}" -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 280 --fail
