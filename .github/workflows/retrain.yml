@@ -1,0 +1,45 @@
+name: crypto-signal-bot-auto-retrain
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Retrain model (real data + backtest combined)
+        env:
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        run: |
+          python -m bot.retrain_from_live --combine-backtest \
+            --symbols BTC/USDT,ETH/USDT,SOL/USDT,DOGE/USDT,DOT/USDT \
+            --timeframes 1h,4h --years 3
+
+      - name: Commit and push updated model (if changed)
+        run: |
+          git config user.name "crypto-signal-bot-auto-retrain"
+          git config user.email "actions@github.com"
+          if ! git diff --quiet -- model.joblib; then
+            git add model.joblib
+            git commit -m "chore: auto-retrain model.joblib [skip ci]"
+            git push
+          else
+            echo "مدل تغییری نکرده، push لازم نیست."
+          fi
