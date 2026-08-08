@@ -1,0 +1,14 @@
+name: crypto-signal-bot-news
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: run news endpoint
+        run: |
+          curl -sS -X GET "${{ secrets.VERCEL_NEWS_URL }}" -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 60 --fail

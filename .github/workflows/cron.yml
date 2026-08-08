@@ -1,0 +1,18 @@
+name: crypto-signal-bot-cron
+
+on:
+  schedule:
+    # هر ۳۰ دقیقه یک‌بار (کاملاً رایگان روی GitHub Actions - می‌تونی تا هر ۵ دقیقه هم کم کنی)
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}  # امکان اجرای دستی از تب Actions گیت‌هاب
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: صدا زدن اندپوینت اسکن روی Vercel
+        run: |
+          curl -sS -X GET "${{ secrets.VERCEL_SCAN_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 320 \
+            --fail
